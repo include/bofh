@@ -3,21 +3,44 @@ MAINTAINER include <francisco.cabrita@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && \
-    apt-get -yq upgrade && \
+ENV LC_ALL C.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+RUN apt-get update && apt-get -yq upgrade && \
+    apt-get -yq install language-pack-en && \
+    locale-gen en_US.UTF-8 && \
+    dpkg-reconfigure locales && \
     apt-get -yq install \
     build-essential \
     software-properties-common \
+    gcc make automake autoconf \
+    curl wget && \
+    echo "--- python ---" && \
+    apt-get -yq install \
+    python-dev \
     python-software-properties \
-    python-pip \
-    python-simplejson \
-    automake \
-    autoconf \
+    python-simplejson && \
+    curl -O https://bootstrap.pypa.io/get-pip.py && \
+    python get-pip.py && \
+    pip install \
+    boto \
+    awscli \
+    paramiko \
+    PyYAML \
+    Jinja2 \
+    httplib2 && \
+    apt-get -yq install \
     flex \
-    curl \
-    wget \
     gawk \
+    nmap \
+    snmp \
+    whois \
     bison \
+    s3cmd \
+    unzip \
+    fping \
+    pwgen \
     openssl \
     gettext \
     pngcrush \
@@ -70,7 +93,6 @@ RUN apt-get update && \
     apt-add-repository -y ppa:rwky/redis && \
     apt-get update -y && \
     apt-get -yq install redis-tools && \
-    pip install awscli && \
     echo "--- cleanup ---" && \
     apt-get -yq autoremove && \
     apt-get -y clean && \
